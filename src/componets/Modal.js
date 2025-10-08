@@ -1,26 +1,24 @@
 import { useState } from "react";
 
 export const Modal = ({ isClosed, setTasks, modal }) => {
-	const [count, setCount] = useState(0)
 
-	const [value, setValue] = useState(modal.value )
+	const [count, setCount] = useState(0)
+	const [value, setValue] = useState(modal.value)
 
 	const handleNameChange = (e) => {
 		setValue(e.target.value)
 	}
 
-
-
 	const handleSave = () => {
 		setTasks(prevTask => {
-			const index = prevTask.findIndex(item => item.id === modal.id) 
+			const index = prevTask.findIndex(item => item.id === modal.id)
 			prevTask[index].value = value
-			return [...prevTask ] })
-			isClosed()
+			return [...prevTask]
+		})
+		isClosed()
 	}
 
-
-		const addCount = () => {
+	const addCount = () => {
 		setCount(count + 1)
 		console.log(count)
 	}

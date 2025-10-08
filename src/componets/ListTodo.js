@@ -1,7 +1,7 @@
 import { Todo } from "../componets/Todo"
 
 
-export const ListTodo = ({tasks, removeTodo, editTodo, modals, toggleTask}) => {
+export const ListTodo = ({ tasks, removeTodo, editTodo, modals, toggleTask }) => {
 
 	return (
 		<div className="list">
@@ -11,12 +11,12 @@ export const ListTodo = ({tasks, removeTodo, editTodo, modals, toggleTask}) => {
 					value={e.value}
 					completed={e.completed}
 					key={e.id}
-					removeTodo={(xyi)=> removeTodo(xyi)}
+					removeTodo={(e) => removeTodo(e)}
 					editTodo={editTodo}
 					modals={modals}
 					toggleTask={toggleTask}
 					tasks={tasks}
-					/>)}
+				/>)}
 			</ul>
 		</div>
 	)
