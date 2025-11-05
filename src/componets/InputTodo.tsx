@@ -1,10 +1,15 @@
 import { useState } from "react";
 
-export const InputTodo = ({ addValue }) => {
+interface InputTodoProps {
+	addValue: (value: string) => void;
+}
 
-	const [value, setValue] = useState('')
+export const InputTodo = ({ addValue }: InputTodoProps) => {
+
+	const [value, setValue] = useState < string > ('')
 
 	const handleAddTodo = () => {
+		if (!value.trim()) return;
 		addValue(value);
 		setValue("");
 	}

@@ -1,30 +1,28 @@
 import { useState } from "react";
+import { Task } from "../types";
 
-export const Modal = ({ isClosed, setTasks, modal }) => {
+interface ModalProps {
+	isClosed: () => void;
+	setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+	modal: Task;
+}
 
-	const [count, setCount] = useState(0)
-	const [value, setValue] = useState(modal.value)
+export const Modal = ({ isClosed, setTasks, modal }: ModalProps) => {
 
-	const handleNameChange = (e) => {
+	const [count, setCount] = useState<number>(0)
+	const [value, setValue] = useState<string>(modal.value)
+
+	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(e.target.value)
 	}
 
 	const handleSave = () => {
 		setTasks(prevTask => {
 			const index = prevTask.findIndex(item => item.id === modal.id)
-			prevTask[index].value = value
+			if (index !== -1) prevTask[index].value = value;
 			return [...prevTask]
 		})
 		isClosed()
-	}
-
-	const addCount = () => {
-		setCount(count + 1)
-		console.log(count)
-	}
-
-	const removeCount = () => {
-		setCount(count - 1)
 	}
 
 	return (
@@ -43,8 +41,8 @@ export const Modal = ({ isClosed, setTasks, modal }) => {
 				<button onClick={handleSave} className="save-btn">Сохранить</button>
 
 				<h1>{`Счет: ${count}`}</h1>
-				<button onClick={addCount}>увеличить</button>
-				<button onClick={removeCount}>уменьшить</button>
+				<button onClick={() => setCount((c) => c + 1)}>увеличить</button>
+				<button onClick={() => setCount((c) => c - 1)}>уменьшить</button>
 
 			</div>
 		</div>

@@ -2,12 +2,12 @@ import { Header } from "./componets/Header";
 import { InputTodo } from "./componets/InputTodo";
 import { ListTodo } from "./componets/ListTodo";
 import { Modal } from "./componets/Modal";
-
 import './App.css';
 import { useState, useEffect } from "react";
+import { Task } from './types';
 
 const tasksManeger = (storageKey = 'tasks') => {
-	const get = () => {
+	const get = (): Task[] => {
 		try {
 			const saved = localStorage.getItem(storageKey);
 			return saved ? JSON.parse(saved) : [];
@@ -15,7 +15,7 @@ const tasksManeger = (storageKey = 'tasks') => {
 			return [];
 		}
 	}
-	const set = (tasks) => {
+	const set = (tasks: Task[]): void => {
 		localStorage.setItem(storageKey, JSON.stringify(tasks));
 	}
 	return {
@@ -24,19 +24,20 @@ const tasksManeger = (storageKey = 'tasks') => {
 }
 
 function App() {
-	const { set, get } = tasksManeger('jopa')
-	const [tasks, setTasks] = useState(get)
-	const [open, setOpen] = useState(false)
-	const [modal, setModal] = useState(null)
+	const { set, get } = tasksManeger("todo-list");
+	const [tasks, setTasks] = useState < Task[] > (get);
+	const [open, setOpen] = useState < boolean > (false);
+	const [modal, setModal] = useState < Task | null > (null);
+	const [filter, setFilter] = useState < "all" | "active" | "completed" > ('all');
 
 	useEffect(() => {
 		set(tasks)
 	}, [tasks])
 
-	const addValue = (value) => {
+	const addValue = (value: string): void => {
 		const task = {
 			id: Math.random(),
-			value: value,
+			value,
 			completed: false,
 		}
 		setTasks((prevTask) => {
@@ -44,34 +45,32 @@ function App() {
 		})
 	}
 
-	const editTodo = (id) => {
+	const editTodo = (id: number): void => {
 		isClosed()
 		setTimeout(() => {
-			setModal(tasks.find(item => item.id === id))
+			setModal(tasks.find((item) => item.id === id) || null)
 			setOpen(true)
 		}, 0)
 	}
 
-	const removeTodo = (id) => {
+	const removeTodo = (id: number): void => {
 		setTasks(tasks.filter(todo => todo.id !== id))
 		isClosed()
 	}
 
-	const isClosed = (id) => {
+	const isClosed = (): void => {
 		setOpen(false)
 		setModal(null)
 	}
 
-	const toggleTask = (id, completed) => {
-		let toggle = tasks.map(e => e.id === id ? { ...e, completed: !e.completed } :
-			{ ...e })
-		setTasks(toggle)
+	const toggleTask = (id: number): void => {
+		setTasks((prev) =>
+			prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+		);
 	}
 
-	const [filter, setFilter] = useState('all');
-
 	const filteredTasks = tasks.filter(task => {
-		if (filter === 'active') return task.completed === false;
+		if (filter === 'active') return !task.completed;
 		if (filter === 'completed') return task.completed;
 		return true;
 	});
@@ -84,7 +83,9 @@ function App() {
 
 				<div className="btn_filterblock ">
 					<button className={`btn_filter ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All List</button>
+
 					<button className={`btn_filter ${filter === 'active' ? 'active' : ''}`} onClick={() => setFilter('active')}>Active List</button>
+
 					<button className={`btn_filter ${filter === 'completed' ? 'active' : ''}`} onClick={() => setFilter('completed')}>Completed List</button>
 				</div>
 
@@ -95,7 +96,8 @@ function App() {
 					toggleTask={toggleTask}
 				/>
 
-				{open && <Modal isClosed={isClosed} modal={modal} setTasks={setTasks} />}
+				{open && modal &&
+					<Modal isClosed={isClosed} modal={modal} setTasks={setTasks} />}
 
 
 			</div>
